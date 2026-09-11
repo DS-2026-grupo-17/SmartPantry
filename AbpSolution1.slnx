@@ -1,0 +1,23 @@
+<Solution>
+    <Configurations>
+        <Platform Name="Any CPU" />
+    </Configurations>
+    <Folder Name="/src/">
+        <Project Path="src/AbpSolution1.Domain/AbpSolution1.Domain.csproj" />
+        <Project Path="src/AbpSolution1.Application/AbpSolution1.Application.csproj" />
+        <Project Path="src/AbpSolution1.EntityFrameworkCore/AbpSolution1.EntityFrameworkCore.csproj" />
+        <Project Path="src/AbpSolution1.Domain.Shared/AbpSolution1.Domain.Shared.csproj" />
+        <Project Path="src/AbpSolution1.Application.Contracts/AbpSolution1.Application.Contracts.csproj" />
+        <Project Path="src/AbpSolution1.HttpApi/AbpSolution1.HttpApi.csproj" />
+        <Project Path="src/AbpSolution1.HttpApi.Client/AbpSolution1.HttpApi.Client.csproj" />
+        <Project Path="src/AbpSolution1.HttpApi.Host/AbpSolution1.HttpApi.Host.csproj" />
+        <Project Path="src/AbpSolution1.DbMigrator/AbpSolution1.DbMigrator.csproj" />
+    </Folder>
+    <Folder Name="/test/">
+        <Project Path="test/AbpSolution1.Application.Tests/AbpSolution1.Application.Tests.csproj" />
+        <Project Path="test/AbpSolution1.EntityFrameworkCore.Tests/AbpSolution1.EntityFrameworkCore.Tests.csproj" />
+        <Project Path="test/AbpSolution1.TestBase/AbpSolution1.TestBase.csproj" />
+        <Project Path="test/AbpSolution1.Domain.Tests/AbpSolution1.Domain.Tests.csproj" />
+        <Project Path="test/AbpSolution1.HttpApi.Client.ConsoleTestApp/AbpSolution1.HttpApi.Client.ConsoleTestApp.csproj" />
+    </Folder>
+</Solution>
