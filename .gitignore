@@ -427,3 +427,25 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# JetBrains Rider
+**/.idea/
+*.sln.iml
+
+# ABP Studio
+**/.abpstudio/
+**/*.abppkg.analyze.json
+
+# VS Code workspace files
+*.code-workspace
+
+# ABP - logs de los proyectos generados
+src/SmartPantry.HttpApi.Host/Logs/*
+src/SmartPantry.DbMigrator/Logs/*
+
+# Use abp install-libs para restaurar las librerías del frontend
+**/wwwroot/libs/*
+
+# IdentityServer temp files
+tempkey.rsa
+tempkey.jwk
