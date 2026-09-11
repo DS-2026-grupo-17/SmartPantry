@@ -57,14 +57,14 @@ Esta cadena usa autenticación integrada de Windows (sin contraseña), por lo qu
    ```bash
    dotnet run --project .\src\SmartPantry.HttpApi.Host
    ```
-   URL local: `<URL del backend, ej. https://localhost:xxxx>`
+   URL local: `https://localhost:44354/`
 
 5. Levantar el frontend Angular:
    ```bash
    cd angular
    yarn start
    ```
-   URL local: `<URL del frontend, ej. http://localhost:4200>`
+   URL local: `http://localhost:4200/`
 
 Para detener cada proceso, `Ctrl+C` en la terminal correspondiente (o detener la depuración en Visual Studio para el backend).
 
