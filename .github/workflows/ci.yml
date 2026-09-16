@@ -1,10 +1,8 @@
 name: CI
-
 on:
   pull_request:
   push:
-     branches: [main, stg, prod]
-
+    branches: [main, stg, prod]
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -13,10 +11,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - run: dotnet restore ./<Proyecto>.slnx
-      - run: dotnet build ./<Proyecto>.slnx --configuration Release --no-restore
-      - run: dotnet test ./<Proyecto>.slnx --configuration Release --no-build
-
+      - run: dotnet restore ./SmartPantry.slnx
+      - run: dotnet build ./SmartPantry.slnx --configuration Release --no-restore
+      - run: dotnet test ./SmartPantry.slnx --configuration Release --no-build
   frontend:
     runs-on: ubuntu-latest
     defaults:
