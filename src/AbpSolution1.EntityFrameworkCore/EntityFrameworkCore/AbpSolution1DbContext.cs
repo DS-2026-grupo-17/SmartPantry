@@ -31,6 +31,7 @@ public class AbpSolution1DbContext :
 
     public DbSet<Author> Authors { get; set; }
 
+    public DbSet<AbpSolution1.Users.User> AppUsers { get; set; }
     public DbSet<Book> Books { get; set; }
 
     #region Entities from the modules
@@ -100,6 +101,16 @@ public class AbpSolution1DbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
             b.HasOne<Author>().WithMany().HasForeignKey(x => x.AuthorId).IsRequired();
+        });
+
+        builder.Entity<AbpSolution1.Users.User>(b =>
+        {
+            b.ToTable(AbpSolution1Consts.DbTablePrefix + "Users",
+                AbpSolution1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.DisplayName).IsRequired().HasMaxLength(AbpSolution1.Users.UserConsts.MaxDisplayNameLength);
+            b.Property(x => x.Email).IsRequired().HasMaxLength(AbpSolution1.Users.UserConsts.MaxEmailLength);
+            b.Property(x => x.Role).IsRequired().HasMaxLength(AbpSolution1.Users.UserConsts.MaxRoleLength);
         });
 
         /* Configure your own tables/entities inside here */
