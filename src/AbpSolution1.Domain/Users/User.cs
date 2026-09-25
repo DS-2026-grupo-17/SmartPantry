@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 
@@ -14,8 +14,36 @@ public class User : AggregateRoot<Guid>
 
     public User(Guid id, string displayName, string email, string role) : base(id)
     {
-        DisplayName = Check.NotNullOrWhiteSpace(displayName, nameof(displayName), UserConsts.MaxDisplayNameLength).Trim();
-        Email = Check.NotNullOrWhiteSpace(email, nameof(email), UserConsts.MaxEmailLength).Trim().ToLower();
-        Role = Check.NotNullOrWhiteSpace(role, nameof(role), UserConsts.MaxRoleLength).Trim();
+        DisplayName = NormalizeDisplayName(displayName);
+        Email = NormalizeEmail(email);
+        Role = NormalizeRole(role);
+    }
+
+    public void Update(string displayName, string email, string role)
+    {
+        // Se validan y normalizan todos los valores antes de asignar:
+        // si alguno es inválido se lanza la excepción sin modificar el estado.
+        var normalizedDisplayName = NormalizeDisplayName(displayName);
+        var normalizedEmail = NormalizeEmail(email);
+        var normalizedRole = NormalizeRole(role);
+
+        DisplayName = normalizedDisplayName;
+        Email = normalizedEmail;
+        Role = normalizedRole;
+    }
+
+    private static string NormalizeDisplayName(string displayName)
+    {
+        return Check.NotNullOrWhiteSpace(displayName, nameof(displayName), UserConsts.MaxDisplayNameLength).Trim();
+    }
+
+    private static string NormalizeEmail(string email)
+    {
+        return Check.NotNullOrWhiteSpace(email, nameof(email), UserConsts.MaxEmailLength).Trim().ToLower();
+    }
+
+    private static string NormalizeRole(string role)
+    {
+        return Check.NotNullOrWhiteSpace(role, nameof(role), UserConsts.MaxRoleLength).Trim();
     }
 }
