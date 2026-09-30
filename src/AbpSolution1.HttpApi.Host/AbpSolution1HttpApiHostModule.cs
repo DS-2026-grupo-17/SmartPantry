@@ -13,7 +13,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using OpenIddict.Validation.AspNetCore;
 using OpenIddict.Server.AspNetCore;
+using AbpSolution1.Catalog;
 using AbpSolution1.EntityFrameworkCore;
+using AbpSolution1.OpenFoodFacts;
 using AbpSolution1.MultiTenancy;
 using AbpSolution1.HealthChecks;
 using Microsoft.OpenApi;
@@ -127,6 +129,20 @@ public class AbpSolution1HttpApiHostModule : AbpModule
         ConfigureSwagger(context, configuration);
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
+        ConfigureExternalProductCatalog(context, configuration);
+    }
+
+    private static void ConfigureExternalProductCatalog(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        // Cuando se pida IExternalProductCatalogClient se crea OpenFoodFactsProductCatalogClient
+        // con un HttpClient administrado por IHttpClientFactory.
+        context.Services.AddHttpClient<IExternalProductCatalogClient, OpenFoodFactsProductCatalogClient>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["OpenFoodFacts:BaseUrl"] ?? "https://world.openfoodfacts.org/");
+            client.Timeout = TimeSpan.FromSeconds(configuration.GetValue("OpenFoodFacts:TimeoutSeconds", 10));
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                configuration["OpenFoodFacts:UserAgent"] ?? "SmartPantry/1.0 (https://github.com/DS-2026-grupo-17/SmartPantry)");
+        });
     }
 
     private void ConfigureStudio(IHostEnvironment hostingEnvironment)
