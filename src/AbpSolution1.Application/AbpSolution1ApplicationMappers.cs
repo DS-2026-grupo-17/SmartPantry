@@ -2,6 +2,7 @@ using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 using AbpSolution1.Authors;
 using AbpSolution1.Books;
+using AbpSolution1.Users;
 
 namespace AbpSolution1;
 
@@ -45,4 +46,14 @@ public partial class AbpSolution1AuthorToAuthorExcelDtoMapper : MapperBase<Autho
     public override partial AuthorExcelDto Map(Author source);
 
     public override partial void Map(Author source, AuthorExcelDto destination);
+}
+
+// Sólo se mapea User -> UserDto. La creación y la modificación no usan mapeo
+// DTO -> entidad: pasan por el constructor y User.Update para respetar las reglas del dominio.
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class AbpSolution1UserToUserDtoMapper : MapperBase<User, UserDto>
+{
+    public override partial UserDto Map(User source);
+
+    public override partial void Map(User source, UserDto destination);
 }
