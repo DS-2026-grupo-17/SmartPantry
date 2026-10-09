@@ -1,12 +1,16 @@
-﻿using Volo.Abp.PermissionManagement;
+using System.Threading.Tasks;
+using Volo.Abp;
+using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Account;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Identity;
 using Volo.Abp.Mapperly;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.TenantManagement;
+using AbpSolution1.Warnings;
 
 namespace AbpSolution1;
 
@@ -18,9 +22,13 @@ namespace AbpSolution1;
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
-    typeof(AbpSettingManagementApplicationModule)
+    typeof(AbpSettingManagementApplicationModule),
+    typeof(AbpBackgroundWorkersModule)
     )]
 public class AbpSolution1ApplicationModule : AbpModule
 {
-
+    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
+    {
+        await context.AddBackgroundWorkerAsync<ExpirationWarningWorker>();
+    }
 }
