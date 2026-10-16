@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using AbpSolution1.Authors;
 using AbpSolution1.Books;
+using AbpSolution1.Pantries;
+using AbpSolution1.Products;
+using AbpSolution1.Warnings;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -33,6 +36,9 @@ public class AbpSolution1DbContext :
 
     public DbSet<AbpSolution1.Users.User> AppUsers { get; set; }
     public DbSet<Book> Books { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Pantry> Pantries { get; set; }
+    public DbSet<PantryWarning> PantryWarnings { get; set; }
 
     #region Entities from the modules
 
@@ -111,6 +117,41 @@ public class AbpSolution1DbContext :
             b.Property(x => x.DisplayName).IsRequired().HasMaxLength(AbpSolution1.Users.UserConsts.MaxDisplayNameLength);
             b.Property(x => x.Email).IsRequired().HasMaxLength(AbpSolution1.Users.UserConsts.MaxEmailLength);
             b.Property(x => x.Role).IsRequired().HasMaxLength(AbpSolution1.Users.UserConsts.MaxRoleLength);
+        });
+
+        builder.Entity<Product>(b =>
+        {
+            b.ToTable(AbpSolution1Consts.DbTablePrefix + "Products", AbpSolution1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.Barcode).IsRequired().HasMaxLength(ProductConsts.MaxBarcodeLength);
+            b.Property(x => x.Name).IsRequired().HasMaxLength(ProductConsts.MaxNameLength);
+            b.HasIndex(x => x.Barcode).IsUnique();
+        });
+
+        builder.Entity<Pantry>(b =>
+        {
+            b.ToTable(AbpSolution1Consts.DbTablePrefix + "Pantries", AbpSolution1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.HasOne<AbpSolution1.Users.User>().WithMany().HasForeignKey(x => x.OwnerId).IsRequired();
+            b.HasIndex(x => x.OwnerId).IsUnique();
+            b.HasMany(x => x.Items).WithOne().HasForeignKey(x => x.PantryId).IsRequired();
+        });
+
+        builder.Entity<PantryItem>(b =>
+        {
+            b.ToTable(AbpSolution1Consts.DbTablePrefix + "PantryItems", AbpSolution1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.HasOne<Product>().WithMany().HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PantryWarning>(b =>
+        {
+            b.ToTable(AbpSolution1Consts.DbTablePrefix + "PantryWarnings", AbpSolution1Consts.DbSchema);
+            b.ConfigureByConvention();
+            b.HasOne<PantryItem>().WithMany().HasForeignKey(x => x.PantryItemId).IsRequired();
+            // Clave lógica estable: una sola advertencia por ítem y tipo, aun con ejecuciones concurrentes.
+            b.HasIndex(x => new { x.PantryItemId, x.Type }).IsUnique();
+            b.HasIndex(x => x.OwnerId);
         });
 
         /* Configure your own tables/entities inside here */

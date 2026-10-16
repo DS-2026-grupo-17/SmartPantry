@@ -1,6 +1,7 @@
-﻿using Volo.Abp.PermissionManagement;
+using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Account;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Identity;
 using Volo.Abp.Mapperly;
 using Volo.Abp.FeatureManagement;
@@ -10,6 +11,7 @@ using Volo.Abp.TenantManagement;
 
 namespace AbpSolution1;
 
+// ExpirationWarningWorker se define en esta capa, pero se registra en AbpSolution1HttpApiHostModule.
 [DependsOn(
     typeof(AbpSolution1DomainModule),
     typeof(AbpSolution1ApplicationContractsModule),
@@ -18,7 +20,8 @@ namespace AbpSolution1;
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
-    typeof(AbpSettingManagementApplicationModule)
+    typeof(AbpSettingManagementApplicationModule),
+    typeof(AbpBackgroundWorkersModule)
     )]
 public class AbpSolution1ApplicationModule : AbpModule
 {
