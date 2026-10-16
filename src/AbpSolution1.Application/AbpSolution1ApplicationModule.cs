@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using Volo.Abp;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Account;
@@ -10,10 +8,10 @@ using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.TenantManagement;
-using AbpSolution1.Warnings;
 
 namespace AbpSolution1;
 
+// ExpirationWarningWorker se define en esta capa, pero se registra en AbpSolution1HttpApiHostModule.
 [DependsOn(
     typeof(AbpSolution1DomainModule),
     typeof(AbpSolution1ApplicationContractsModule),
@@ -27,8 +25,5 @@ namespace AbpSolution1;
     )]
 public class AbpSolution1ApplicationModule : AbpModule
 {
-    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
-    {
-        await context.AddBackgroundWorkerAsync<ExpirationWarningWorker>();
-    }
+
 }
