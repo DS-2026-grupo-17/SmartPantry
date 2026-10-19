@@ -16,6 +16,9 @@ using OpenIddict.Server.AspNetCore;
 using AbpSolution1.Catalog;
 using AbpSolution1.EntityFrameworkCore;
 using AbpSolution1.OpenFoodFacts;
+using AbpSolution1.Warnings;
+using System.Threading.Tasks;
+using Volo.Abp.BackgroundWorkers;
 using AbpSolution1.MultiTenancy;
 using AbpSolution1.HealthChecks;
 using Microsoft.OpenApi;
@@ -317,5 +320,15 @@ public class AbpSolution1HttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+    }
+
+    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
+    {
+        // Configura el pipeline HTTP (método sincrónico de arriba).
+        OnApplicationInitialization(context);
+
+        // RF-15: el worker periódico se registra sólo en la aplicación que lo ejecuta (el Host).
+        // Así no se inicia en el DbMigrator ni en la suite de pruebas.
+        await context.AddBackgroundWorkerAsync<ExpirationWarningWorker>();
     }
 }
