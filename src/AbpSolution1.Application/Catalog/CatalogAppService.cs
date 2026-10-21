@@ -1,15 +1,15 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Volo.Abp.Application.Services;
 using Microsoft.AspNetCore.Authorization;
+using Volo.Abp.Application.Services;
 
 namespace AbpSolution1.Catalog;
 
 /*
  * RF-05, búsqueda por código. Coordina la consulta al catálogo externo y traduce su resultado
  * al contrato propio. No conoce HttpClient, rutas, encabezados ni el JSON del proveedor.
- * Sin [Authorize]: consulta sin login como decisión transitoria de esta etapa.
- * No guarda el producto: la persistencia de resultados externos es un incremento posterior.
+ * Requiere un usuario autenticado (TP09); no exige permisos administrativos.
+ * El guardado del producto (RF-08) lo resuelve ProductAppService.
  */
 [Authorize]
 public class CatalogAppService : ApplicationService, ICatalogAppService

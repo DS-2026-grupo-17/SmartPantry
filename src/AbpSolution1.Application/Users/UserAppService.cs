@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AbpSolution1.Users;
 
@@ -14,6 +14,7 @@ namespace AbpSolution1.Users;
  * - la creación usa el constructor de User (valida y normaliza) en lugar del mapeo DTO -> entidad;
  * - la modificación usa User.Update (valida todo antes de cambiar el estado);
  * - el orden por defecto de la lista es por DisplayName.
+ * Requiere un usuario autenticado (TP09).
  */
 [Authorize]
 public class UserAppService :

@@ -340,8 +340,8 @@ public class AbpSolution1HttpApiHostModule : AbpModule
 
     public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
     {
-        // Configura el pipeline HTTP (método sincrónico de arriba).
-        OnApplicationInitialization(context);
+        // Configura el pipeline HTTP: la implementación base llama a OnApplicationInitialization (arriba).
+        await base.OnApplicationInitializationAsync(context);
 
         // RF-15: el worker periódico se registra sólo en la aplicación que lo ejecuta (el Host).
         // Así no se inicia en el DbMigrator ni en la suite de pruebas.

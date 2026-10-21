@@ -2,6 +2,7 @@ using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 using AbpSolution1.Authors;
 using AbpSolution1.Books;
+using AbpSolution1.Products;
 using AbpSolution1.Users;
 
 namespace AbpSolution1;
@@ -56,4 +57,12 @@ public partial class AbpSolution1UserToUserDtoMapper : MapperBase<User, UserDto>
     public override partial UserDto Map(User source);
 
     public override partial void Map(User source, UserDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class AbpSolution1ProductToProductDtoMapper : MapperBase<Product, ProductDto>
+{
+    public override partial ProductDto Map(Product source);
+
+    public override partial void Map(Product source, ProductDto destination);
 }
