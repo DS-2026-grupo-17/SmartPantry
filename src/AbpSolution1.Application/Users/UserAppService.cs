@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AbpSolution1.Users;
 
@@ -14,6 +15,7 @@ namespace AbpSolution1.Users;
  * - la modificación usa User.Update (valida todo antes de cambiar el estado);
  * - el orden por defecto de la lista es por DisplayName.
  */
+[Authorize]
 public class UserAppService :
     CrudAppService<
         User,

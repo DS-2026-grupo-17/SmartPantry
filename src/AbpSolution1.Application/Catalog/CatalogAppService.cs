@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AbpSolution1.Catalog;
 
@@ -10,6 +11,7 @@ namespace AbpSolution1.Catalog;
  * Sin [Authorize]: consulta sin login como decisión transitoria de esta etapa.
  * No guarda el producto: la persistencia de resultados externos es un incremento posterior.
  */
+[Authorize]
 public class CatalogAppService : ApplicationService, ICatalogAppService
 {
     private readonly IExternalProductCatalogClient _externalProductCatalogClient;
