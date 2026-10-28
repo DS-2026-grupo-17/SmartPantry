@@ -1,49 +1,50 @@
+using AbpSolution1.Catalog;
+using AbpSolution1.EntityFrameworkCore;
+using AbpSolution1.HealthChecks;
+using AbpSolution1.MultiTenancy;
+using AbpSolution1.OpenFoodFacts;
+using AbpSolution1.Warnings;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
-using OpenIddict.Validation.AspNetCore;
-using OpenIddict.Server.AspNetCore;
-using AbpSolution1.Catalog;
-using AbpSolution1.EntityFrameworkCore;
-using AbpSolution1.OpenFoodFacts;
-using AbpSolution1.Warnings;
 using System.Threading.Tasks;
-using Volo.Abp.BackgroundWorkers;
-using AbpSolution1.MultiTenancy;
-using AbpSolution1.HealthChecks;
-using Microsoft.OpenApi;
 using Volo.Abp;
-using Volo.Abp.Studio;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Autofac;
-using Volo.Abp.Localization;
-using Volo.Abp.Modularity;
-using Volo.Abp.UI.Navigation.Urls;
-using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.AspNetCore.Mvc.Libs;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
-using Microsoft.AspNetCore.Hosting;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
+using Volo.Abp.Autofac;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Identity;
+using Volo.Abp.Localization;
+using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
-using Volo.Abp.Swashbuckle;
-using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.Studio;
+using Volo.Abp.Studio.Client.AspNetCore;
+using Volo.Abp.Swashbuckle;
+using Volo.Abp.UI.Navigation.Urls;
+using Volo.Abp.VirtualFileSystem;
 
 namespace AbpSolution1;
 
@@ -122,6 +123,11 @@ public class AbpSolution1HttpApiHostModule : AbpModule
             context.Services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
         }
+
+        Configure<AbpMvcLibsOptions>(options =>
+        {
+            options.CheckLibs = false;
+        });
 
         ConfigureStudio(hostingEnvironment);
         ConfigureAuthentication(context);
@@ -242,6 +248,16 @@ public class AbpSolution1HttpApiHostModule : AbpModule
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "AbpSolution1 API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Description = "Pegue access_token sin el prefijo Bearer."
+                });
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                });
             });
     }
 
@@ -324,8 +340,8 @@ public class AbpSolution1HttpApiHostModule : AbpModule
 
     public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
     {
-        // Configura el pipeline HTTP (método sincrónico de arriba).
-        OnApplicationInitialization(context);
+        // Configura el pipeline HTTP: la implementación base llama a OnApplicationInitialization (arriba).
+        await base.OnApplicationInitializationAsync(context);
 
         // RF-15: el worker periódico se registra sólo en la aplicación que lo ejecuta (el Host).
         // Así no se inicia en el DbMigrator ni en la suite de pruebas.
