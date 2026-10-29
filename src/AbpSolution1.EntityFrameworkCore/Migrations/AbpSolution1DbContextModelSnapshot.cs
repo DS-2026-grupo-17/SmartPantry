@@ -190,6 +190,14 @@ namespace AbpSolution1.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal?>("Quantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<string>("Unit")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PantryId");
@@ -2299,15 +2307,6 @@ namespace AbpSolution1.Migrations
                     b.HasOne("AbpSolution1.Authors.Author", null)
                         .WithMany()
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AbpSolution1.Pantries.Pantry", b =>
-                {
-                    b.HasOne("AbpSolution1.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

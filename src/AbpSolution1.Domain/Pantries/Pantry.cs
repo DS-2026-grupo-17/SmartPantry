@@ -6,9 +6,9 @@ using Volo.Abp.Domain.Entities;
 namespace AbpSolution1.Pantries;
 
 /*
- * Pantry Aggregate (wiki). Cada despensa pertenece a un único usuario (OwnerId),
- * que se toma de datos persistidos y nunca del usuario HTTP actual.
- * Modelo mínimo para RF-15: la administración por el usuario (RF-10/RF-11) llega después.
+ * Pantry Aggregate (wiki). Cada despensa pertenece a un único usuario.
+ * OwnerId es el Id del usuario de ABP Identity (el mismo que entrega ICurrentUser);
+ * se referencia sólo por Id, sin clave foránea a las tablas del módulo Identity.
  */
 public class Pantry : AggregateRoot<Guid>
 {
@@ -31,10 +31,17 @@ public class Pantry : AggregateRoot<Guid>
         Items = new List<PantryItem>();
     }
 
-    public PantryItem AddItem(Guid itemId, Guid productId, DateOnly? expirationDate)
+    public PantryItem AddItem(Guid itemId, Guid productId, DateOnly? expirationDate, decimal? quantity = null, string? unit = null)
     {
-        var item = new PantryItem(itemId, Id, productId, expirationDate);
+        var item = new PantryItem(itemId, Id, productId, expirationDate, quantity, unit);
         Items.Add(item);
+        return item;
+    }
+
+    public PantryItem UpdateItem(Guid itemId, decimal? quantity, string? unit, DateOnly? expirationDate)
+    {
+        var item = GetItem(itemId);
+        item.Update(quantity, unit, expirationDate);
         return item;
     }
 
@@ -48,7 +55,13 @@ public class Pantry : AggregateRoot<Guid>
         GetItem(itemId).MarkAsConsumed();
     }
 
-    private PantryItem GetItem(Guid itemId)
+    // Eliminación explícita: sus advertencias se borran en cascada en la base.
+    public void RemoveItem(Guid itemId)
+    {
+        Items.Remove(GetItem(itemId));
+    }
+
+    public PantryItem GetItem(Guid itemId)
     {
         return Items.FirstOrDefault(item => item.Id == itemId)
                ?? throw new EntityNotFoundException(typeof(PantryItem), itemId);
