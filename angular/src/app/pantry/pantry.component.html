@@ -138,11 +138,18 @@
           class="form-control"
           formControlName="quantity"
           min="0"
+          [attr.max]="maxQuantity"
           step="any"
           [class.is-invalid]="form.controls.quantity.invalid && form.controls.quantity.touched"
         />
-        @if (form.controls.quantity.invalid && form.controls.quantity.touched) {
-          <div class="invalid-feedback">{{ '::Pantry:Validation:QuantityNonNegative' | abpLocalization }}</div>
+        @if (form.controls.quantity.touched) {
+          @if (form.controls.quantity.hasError('min')) {
+            <div class="invalid-feedback">{{ '::Pantry:Validation:QuantityNonNegative' | abpLocalization }}</div>
+          } @else if (form.controls.quantity.hasError('max')) {
+            <div class="invalid-feedback">
+              {{ '::Pantry:Validation:QuantityMax' | abpLocalization: ((maxQuantity | number) ?? '') }}
+            </div>
+          }
         }
       </div>
 

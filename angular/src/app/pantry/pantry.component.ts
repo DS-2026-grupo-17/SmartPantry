@@ -54,6 +54,7 @@ export class PantryComponent {
   private readonly fb = inject(FormBuilder);
 
   readonly maxUnitLength = MAX_UNIT_LENGTH;
+  readonly maxQuantity = MAX_QUANTITY;
 
   readonly state = signal<PantryViewState>('loading');
   readonly items = signal<PantryItemDto[]>([]);
