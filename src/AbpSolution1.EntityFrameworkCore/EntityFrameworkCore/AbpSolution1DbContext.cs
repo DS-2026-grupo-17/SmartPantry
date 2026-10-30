@@ -132,7 +132,7 @@ public class AbpSolution1DbContext :
         {
             b.ToTable(AbpSolution1Consts.DbTablePrefix + "Pantries", AbpSolution1Consts.DbSchema);
             b.ConfigureByConvention();
-            b.HasOne<AbpSolution1.Users.User>().WithMany().HasForeignKey(x => x.OwnerId).IsRequired();
+            // OwnerId = Id del usuario de ABP Identity; se referencia por Id, sin clave foránea (TP10).
             b.HasIndex(x => x.OwnerId).IsUnique();
             b.HasMany(x => x.Items).WithOne().HasForeignKey(x => x.PantryId).IsRequired();
         });
@@ -142,6 +142,8 @@ public class AbpSolution1DbContext :
             b.ToTable(AbpSolution1Consts.DbTablePrefix + "PantryItems", AbpSolution1Consts.DbSchema);
             b.ConfigureByConvention();
             b.HasOne<Product>().WithMany().HasForeignKey(x => x.ProductId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+            b.Property(x => x.Quantity).HasPrecision(18, 3);
+            b.Property(x => x.Unit).HasMaxLength(PantryConsts.MaxUnitLength);
         });
 
         builder.Entity<PantryWarning>(b =>
