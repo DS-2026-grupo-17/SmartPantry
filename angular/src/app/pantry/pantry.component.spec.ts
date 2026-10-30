@@ -149,6 +149,22 @@ describe('PantryComponent', () => {
       expect(pantryItemService.update).not.toHaveBeenCalled();
     });
 
+    it('distingue el límite máximo de cantidad del valor negativo y no invoca al servidor', () => {
+      component.form.controls.quantity.setValue(component.maxQuantity + 1);
+
+      component.save();
+
+      expect(component.form.controls.quantity.hasError('max')).toBe(true);
+      expect(component.form.controls.quantity.hasError('min')).toBe(false);
+      expect(pantryItemService.update).not.toHaveBeenCalled();
+    });
+
+    it('acepta exactamente el límite máximo de cantidad', () => {
+      component.form.controls.quantity.setValue(component.maxQuantity);
+
+      expect(component.form.controls.quantity.valid).toBe(true);
+    });
+
     it('no invoca al servidor con una fecha inválida', () => {
       component.form.controls.expirationDate.setValue('1900-01-01');
 

@@ -70,6 +70,7 @@
     "Pantry:DeleteConfirmation": "Do you want to delete '{0}' from your pantry?",
     "Pantry:SaveError": "The changes could not be saved.",
     "Pantry:Validation:QuantityNonNegative": "Quantity cannot be negative.",
+    "Pantry:Validation:QuantityMax": "Quantity cannot be greater than {0}.",
     "Pantry:Validation:InvalidDate": "Enter a valid date between the years 2000 and 2100.",
     "Pantry:Validation:UnitMaxLength": "Unit can have at most {0} characters."
   }
