@@ -247,7 +247,7 @@ public class AbpSolution1HttpApiHostModule : AbpModule
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "AbpSolution1 API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
-                options.CustomSchemaIds(type => type.FullName);
+                options.CustomSchemaIds(GetSwaggerSchemaId);
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
@@ -259,6 +259,25 @@ public class AbpSolution1HttpApiHostModule : AbpModule
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
             });
+    }
+
+    /*
+     * Nombre de esquema de Swagger sólo con letras, números y puntos.
+     * type.FullName de un genérico incluye corchetes, espacios, comas y "=" (versión del ensamblado),
+     * y Swagger UI no puede resolver esas referencias: muestra "Could not render responses_Responses"
+     * en todos los listados paginados. Ej.: PagedResultDto<PantryItemDto> ->
+     * "Volo.Abp.Application.Dtos.PagedResultDtoOfAbpSolution1.Pantries.PantryItemDto".
+     */
+    private static string GetSwaggerSchemaId(Type type)
+    {
+        if (!type.IsGenericType)
+        {
+            return (type.FullName ?? type.Name).Replace('+', '.');
+        }
+
+        var genericName = (type.GetGenericTypeDefinition().FullName ?? type.Name).Replace('+', '.');
+        genericName = genericName[..genericName.IndexOf('`')];
+        return genericName + "Of" + string.Join("And", type.GetGenericArguments().Select(GetSwaggerSchemaId));
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)

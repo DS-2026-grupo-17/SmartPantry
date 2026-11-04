@@ -12,4 +12,8 @@ public static class PantryConsts
 
     // Frecuencia del worker de vencimientos: una vez por hora.
     public const int ExpirationWarningWorkerPeriodMilliseconds = 60 * 60 * 1000;
+
+    // Quantity (wiki): cantidad no negativa y unidad opcional.
+    public const int MaxUnitLength = 20;
+    public const double MaxQuantity = 1_000_000;
 }

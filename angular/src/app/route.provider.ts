@@ -16,6 +16,14 @@ function configureRoutes() {
         layout: eLayoutType.application,
       },
       {
+        // Registrar el menú no crea la ruta: la ruta está en app.routes.ts.
+        path: '/pantry',
+        name: '::Menu:MyPantry',
+        iconClass: 'fas fa-box-open',
+        order: 2,
+        layout: eLayoutType.application,
+      },
+      {
         path: '/books',
         name: '::Menu:Books',
         iconClass: 'fas fa-book',
